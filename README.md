@@ -21,6 +21,8 @@ OBSERVAÇÕES
 	- Há um usuário padrão já definido no banco de dados com as seguintes credenciais: Login: admin | Senha: admin
 	- No banco de dados, a senha deve ser um HASH MD5
 	
+- As imagens (cabeçalho,assinatura) para gerar os certificados estão na pasta "resources/images/". Ao alterá-las, o ideal é manter o mesmo tamanho de imagem
+	
 
 
 
