@@ -1,8 +1,13 @@
 <?php
 
 /**************************** CONEXAO COM O BANCO******** *******************************************/
-$conn = mysql_connect('', '', '') or die (mysql_error());
-$banco = mysql_select_db('certificados',$conn);
+$host = "";
+$usuario = "";
+$senha = "";
+$db = "certificados";
+
+$conn = new mysqli($host,$usuario,$senha,$db);
+
 /****************************************************************************************************/
 
 ?>

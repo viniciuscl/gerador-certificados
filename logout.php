@@ -2,15 +2,8 @@
 
 		session_start();
 
-		unset($_SESSION['user']);
-		unset($_SESSION['palestrante']);
-		unset($_SESSION['participantes']);
-		unset($_SESSION['carga']);
-		unset($_SESSION['dtaini']);
-		unset($_SESSION['dtafim']);
-		unset($_SESSION['modelo']);
-		unset($_SESSION['nome']);		
+		session_destroy();	
 
-		header("Location: http://cpd.cirp.usp.br/certificados");
+		echo "<script type='text/javascript'> parent.window.location.href='index.php' </script>";
 
 ?>
