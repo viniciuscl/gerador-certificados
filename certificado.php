@@ -19,12 +19,20 @@ if(!isset($_SESSION['user']))  { //nao encontrou usuario, exclui variáveis de s
 		/**
 			BUSCA NO BANCO DE DADOS O ENDEREÇO DO SEU SITE E O CAMINHO NO SERVIDOR PARA ARMAZENAR OS CERTIFICADOS GERADOS
 		**/		
-		$sql = "SELECT * FROM config;";
+		$sql = "SELECT * FROM config WHERE id = 1;";
 		$query = $conn->query($sql);
 		$result = $query->fetch_array();
 		
-		$downloadURL = $result["url_download_certificados"];
-		$caminhoServidor = $result["caminho_armazenar_certificados"];
+		$urlSite = $result["url_site"];
+		
+		/** DADOS QUE SERÃO UTILIZADOS NO TEMPLATE DO CERTIFICADO**/
+		$nomeAssinatura = $result["nome_assinatura"];
+		$tituloAssinatura = $result["titulo_assinatura"];
+		$endereco = $result["endereco"];
+		$rodape = $result["rodape"];
+		
+		$caminhoServidor = "arquivos";
+		$downloadURL = $urlSite."/".$caminhoServidor;
 				
 		/** RECEBE E TRATA OS DADOS ENVIADOS PELO FORMULÁRIO **/
 		$nomes = $_POST['participantes'];
@@ -126,22 +134,22 @@ if(!isset($_SESSION['user']))  { //nao encontrou usuario, exclui variáveis de s
 		
 		//GERA CERTIFICADO PARA CADA NOME FORNECIDO, INSERE NO ARQUIVO ZIP, ENVIA POR E-MAIL PARA O ALUNO E INSERE NO BANCO DE DADOS
 		for($i=0;$i<$qtd_nomes;$i++) {			
+			$hash = md5($NomeAlunoSemAcent.$Evento);
+			$data = date("y-m-d H:i:s");
 		
-			geraCertificado($Data,$NomeAluno[$i],$Evento,$orador,$CargaHoraria,$organizadorEvento,$caminhoServidor);
+			geraCertificado($Data,$NomeAluno[$i],$Evento,$orador,$CargaHoraria,$organizadorEvento,$caminhoServidor,$hash,$nomeAssinatura,$tituloAssinatura,$endereco,$rodape);
 			
 			$NomeAlunoSemAcent = remove_acentuacao($NomeAluno[$i],true);
 			$zip->addfile($caminhoServidor."/$EventoSemAcent/".$NomeAlunoSemAcent.".pdf", $NomeAlunoSemAcent.".pdf");
-
-			$hash = md5($NomeAlunoSemAcent.$Evento);
-			$data = date("y-m-d H:i:s");
 			
 			//ENVIA EMAIL, SE INFORMADO
 			if(isset($EmailAluno) && $EmailAluno[$i] != "") {
 				$msg = "Olá $NomeAluno[$i],
 				\n\nSeu certificado está disponível no link abaixo.
 				\n\nDownload do Certificado: $downloadURL/$EventoSemAcent/$NomeAlunoSemAcent.pdf
-				\n\nPara verificar a veracidade dos certificados, acesse o link: $downloadURL
-				\n\nObrigado pela sua participação!";										
+				\nPara verificar a veracidade dos certificados, acesse o link: $urlSite
+				\n\nObrigado pela sua participação!
+				\n$Evento";										
 				
 				mail($EmailAluno[$i], "Certificado - $Evento", $msg, $headers);				
 				$emailAluno = $EmailAluno[$i];
@@ -183,19 +191,19 @@ if(!isset($_SESSION['user']))  { //nao encontrou usuario, exclui variáveis de s
 		$msg = "Prezado Responsável,
 				\n\nClique no link abaixo para realizar o download de todos os certificados.
 				\n\nDownload dos Certificados: $downloadURL/$EventoSemAcent/certificados.zip
-				\n\nPara verificar a validade dos certificados, acesse o link: $downloadURL
-				\n\nObrigado";										
+				\nPara verificar a veracidade dos certificados, acesse o link: $urlSite
+				\n\n$Evento";										
 		
 		mail("$emailResp", "Certificados - $Evento", $msg, $headers);	
 				
 
-		/*echo "<script> alert('Certificados Gerados com Sucesso!');
+		echo "<script> alert('Certificados Gerados com Sucesso!');
 					   window.parent.location.href='principal.php'
-		     </script>";				*/
+		     </script>";
 						
 }
 
-	function geraCertificado($Data,$NomeAluno,$Evento,$orador,$CargaHoraria,$organizadorEvento,$caminhoServidor) {
+	function geraCertificado($Data,$NomeAluno,$Evento,$orador,$CargaHoraria,$organizadorEvento,$caminhoServidor,$hash,$nomeAssinatura,$tituloAssinatura,$endereco,$rodape) {
 		
 			//CRIA O PDF
 			$pdf=new FPDF();
@@ -231,24 +239,35 @@ if(!isset($_SESSION['user']))  { //nao encontrou usuario, exclui variáveis de s
 			$pdf->SetFont('Century', '', 12);
 			$pdf->SetY(157);
 			$pdf->SetX(73);
-			$pdf->Cell(145,0,'Sr. Fulano da Silva',0,0,'C');
+			$pdf->Cell(145,0,utf8_decode($nomeAssinatura),0,0,'C');
 			
-			//TITULO OU FUNCAO DO ASSINANTE
-			$pdf->ln(7);
-			$pdf->SetX(73);
-			$pdf->Cell(145,0,utf8_decode("Título/Função de Fulano da Silva"),0,0,'C');
+			if(isset($tituloAssinatura) && !empty($tituloAssinatura)) {
+				//TITULO OU FUNCAO DO ASSINANTE
+				$pdf->ln(6);
+				$pdf->SetX(73);
+				$pdf->Cell(145,0,utf8_decode($tituloAssinatura),0,0,'C');
+			}
 			
-			//ENDEREÇO DO LOCAL A DESEJAR
-			$pdf->SetY(175);
-			$pdf->ln(4);
-			$pdf->SetX(73);
-			$pdf->Cell(145,0,utf8_decode("Avenida Meu Endereço, São Paulo - SP"),0,0,'C');
+			if(isset($endereco) && !empty($endereco)) {
+				//ENDEREÇO DO LOCAL
+				$pdf->SetY(175);
+				$pdf->ln(2);
+				$pdf->SetX(73);
+				$pdf->Cell(145,0,utf8_decode($endereco)." - ".utf8_decode($rodape),0,0,'C');
+			}
 			
-			//RODAPE COM DEMAIS INFORMACOES
-			$pdf->ln(7);
+			/*if(isset($rodape) && !empty($rodape)) {
+				//RODAPE COM DEMAIS INFORMACOES
+				$pdf->ln(6);
+				$pdf->SetX(73);
+				$pdf->Cell(145,0,utf8_decode($rodape),0,0,'C');
+			}*/
+			
+			//CODIGO VERIFICACAO
+			$pdf->ln(6);
 			$pdf->SetX(73);
-			$pdf->Cell(145,0,'(11) 5555-5555 - www.seusite.com.br',0,0,'C');
-
+			$pdf->Cell(145,0,utf8_decode('Código de Verificação: ').$hash,0,0,'C');
+			
 			//GERA O ARQUIVO PDF COM O NOME DO ALUNO E SALVA NO SERVIDOR EM PASTA ESPECIFICA DO EVENTO
 			$NomeAlunoSemAcent = remove_acentuacao($NomeAluno,true);					
 			$EventoSemAcent = remove_acentuacao($Evento,true);			

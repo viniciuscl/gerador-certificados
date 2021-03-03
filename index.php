@@ -42,7 +42,7 @@
 				<legend>Acesso</legend>
 				<table>	
 					<tr>
-						<td><label for="usuario">Usuário</label></td>
+						<td><label for="usuario">UsuÃ¡rio</label></td>
 						<td><input type="text" id="usuario" name="usuario" size="15" required/></td>
 					</tr>
 
@@ -63,7 +63,7 @@
 				<legend>Verificar Certificado</legend>
 				<table>	
 					<tr>
-						<td><label for="usuario">Código</label></td>
+						<td><label for="usuario">CÃ³digo</label></td>
 						<td><input type="text" id="codigo" name="codigo" size="30" required/></td>
 					</tr>
 				</table>
@@ -80,7 +80,7 @@
 						include_once("banco.php");
 						
 						/**
-							BUSCA NO BANCO DE DADOS O ENDEREÇO DO SEU SITE E O CAMINHO NO SERVIDOR PARA ARMAZENAR OS CERTIFICADOS GERADOS
+							BUSCA NO BANCO DE DADOS O ENDEREÃ‡O DO SEU SITE E O CAMINHO NO SERVIDOR PARA ARMAZENAR OS CERTIFICADOS GERADOS
 						**/		
 						$sql = "SELECT url_download_certificados FROM config;";
 						$query = $conn->query($sql);
@@ -97,12 +97,12 @@
 						if($query->num_rows == 1) {
 							extract($result[0]);							
 							echo "<div id='div-info-certificado'>";
-								echo "<h2 style='color:red;'>Certificado Válido</h2><br/>";
-								echo "<strong>Código de Verificação:</strong> $hash_validacao <br/>";
+								echo "<h2 style='color:red;'>Certificado VÃ¡lido</h2><br/>";
+								echo "<strong>CÃ³digo de VerificaÃ§Äƒo:</strong> $hash_validacao <br/>";
 								echo "<strong>Evento:</strong> $evento <br/>";
 								echo "<strong>Organizador: </strong> $organizador_evento <br/>";
 								echo "<strong>Participante:</strong> $nome_participante <br/>";
-								echo "<strong>Data de Emissão:</strong> $data <br/><br/>";
+								echo "<strong>Data de EmissÄƒo:</strong> $data <br/><br/>";
 								
 								$evento_  = str_replace(" ", "_", $evento);
 								$participante_ = str_replace(" ", "_", $nome_participante);
@@ -110,7 +110,7 @@
 							echo "</div>";
 							
 						} else {
-							echo "<h2 style='color:red;'>Certificado Inválido</h2>";
+							echo "<h2 style='color:red;'>Certificado InvÃ¡lido</h2>";
 						}
 					}			
 		?>

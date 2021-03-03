@@ -13,17 +13,23 @@ CREATE TABLE IF NOT EXISTS `certificado` (
   `data` datetime NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `hash_validacao` (`hash_validacao`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 
 --
 -- tabela `config`
 --
 
-CREATE TABLE IF NOT EXISTS `config` (
-  `url_download_certificados` varchar(100) NOT NULL,
-  `caminho_armazenar_certificados` varchar(100) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+CREATE TABLE `config` (
+  `id` int(11) NOT NULL,
+  `url_site` varchar(100) NOT NULL,
+  `nome_assinatura` varchar(255) NOT NULL,
+  `titulo_assinatura` varchar(255) DEFAULT NULL,
+  `endereco` varchar(255) DEFAULT NULL,
+  `rodape` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 
 
 --
@@ -37,7 +43,7 @@ CREATE TABLE IF NOT EXISTS `usuario` (
   `login` varchar(20) NOT NULL,
   `senha` varchar(32) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 
 INSERT INTO `usuario` (`id`, `nome`, `email`, `login`, `senha`) VALUES
