@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
@@ -82,11 +82,11 @@
 						/**
 							BUSCA NO BANCO DE DADOS O ENDEREÇO DO SEU SITE E O CAMINHO NO SERVIDOR PARA ARMAZENAR OS CERTIFICADOS GERADOS
 						**/		
-						$sql = "SELECT url_download_certificados FROM config;";
+						$sql = "SELECT url_site FROM config;";
 						$query = $conn->query($sql);
 						$result = $query->fetch_array();
 						
-						$downloadURL = $result["url_download_certificados"];
+						$url_site = $result["url_site"];
 						
 						$hash = trim($_POST['codigo']);
 						
@@ -98,19 +98,19 @@
 							extract($result[0]);							
 							echo "<div id='div-info-certificado'>";
 								echo "<h2 style='color:red;'>Certificado Válido</h2><br/>";
-								echo "<strong>Código de Verificaçăo:</strong> $hash_validacao <br/>";
+								echo "<strong>Código de Verificação:</strong> $hash_validacao <br/>";
 								echo "<strong>Evento:</strong> $evento <br/>";
 								echo "<strong>Organizador: </strong> $organizador_evento <br/>";
 								echo "<strong>Participante:</strong> $nome_participante <br/>";
-								echo "<strong>Data de Emissăo:</strong> $data <br/><br/>";
+								echo "<strong>Data de Emissão:</strong> $data <br/><br/>";
 								
 								$evento_  = str_replace(" ", "_", $evento);
 								$participante_ = str_replace(" ", "_", $nome_participante);
-								echo "<a href='$downloadURL/$evento_/$participante_.pdf' target='_blank'>Visualizar Certificado</a>";
+								echo "<a href='$url_site/arquivos/$evento_/$participante_.pdf' target='_blank'>Visualizar Certificado</a>";
 							echo "</div>";
 							
 						} else {
-							echo "<h2 style='color:red;'>Certificado Inválido</h2>";
+							echo "<br/><br/><h2 style='color:red;'>Certificado Inválido</h2>";
 						}
 					}			
 		?>
